@@ -53,6 +53,9 @@ export default (
 
   const initialRouteName = stackConfig.initialRouteName || routeNames[0];
 
+  // If stateName is not explicitly set, just use the initialRouteName as default
+  const stateName: string = stackConfig.stateName || initialRouteName;
+
   const initialChildRouter = childRouters[initialRouteName];
   const paths = stackConfig.paths || {};
 
@@ -133,6 +136,7 @@ export default (
         };
         // eslint-disable-next-line no-param-reassign
         state = {
+          stateName,
           index: 0,
           routes: [route],
         };
@@ -140,20 +144,6 @@ export default (
 
       // Check if a child scene wants to handle the action as long as it is not a reset to the root stack
       if (action.type !== NavigationActions.RESET || action.key !== null) {
-        if(action.root){
-          delete action.root;
-          const childRoute=action.actions[action.index];
-          const childRouter=childRouters[childRoute.routeName];
-          if(childRouter){
-            const route=childRouter.getStateForAction(action);
-            const newRoute = {...route,key:childRoute.key,routeName:childRoute.routeName};
-            state = {index:0,routes:[newRoute]};
-            return StateUtils.replaceAt(state, childRoute.key, newRoute);
-          }else{
-            return {index:0,routes:[{index:0,key:'Init',routeName:childRoute.routeName}]};
-          }
-        }
-
         const keyIndex = action.key
           ? StateUtils.indexOf(state, action.key)
           : -1;
@@ -255,6 +245,11 @@ export default (
       }
 
       if (action.type === NavigationActions.RESET) {
+        // Prevent the RESET action from propagating on child components if
+        // the stateName param is set and just return state as is
+        if (action.stateName && action.stateName !== state.stateName) {
+          return state;
+        }
         const resetAction: NavigationResetAction = action;
 
         return {
