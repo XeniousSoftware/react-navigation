@@ -2,16 +2,14 @@
 
 import React from 'react';
 
-import {
-  Animated,
-  type ViewProps,
-  type TextProps,
-  type StyleDefinition,
-  type AnimatedViewStylePropTypes,
-} from 'react-native';
+import type { TabScene } from './views/TabView/TabView';
 
-export type ViewStyleProp = $PropertyType<ViewProps, 'style'>;
-export type TextStyleProp = $PropertyType<TextProps, 'style'>;
+import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+
+import { Animated, View, Text } from 'react-native';
+
+export type ViewStyleProp = StyleObj;
+export type TextStyleProp = StyleObj;
 export type AnimatedViewStyleProp = $PropertyType<
   $PropertyType<Animated.View, 'props'>,
   'style'
@@ -265,6 +263,7 @@ export type HeaderProps = {
     NavigationStackScreenOptions
   >,
   style: ViewStyleProp,
+  isLandscape?: boolean,
 };
 
 /**
@@ -285,6 +284,7 @@ export type NavigationStackScreenOptions = {
   headerRight?: React.Element<*>,
   headerStyle?: ViewStyleProp,
   gesturesEnabled?: boolean,
+  gestureResponseDistance?: { vertical?: number, horizontal?: number },
 };
 
 export type NavigationStackRouterConfig = {
@@ -337,6 +337,10 @@ export type NavigationTabScreenOptions = {
         *
       >),
   tabBarVisible?: boolean,
+  tabBarOnPress?: (
+    scene: TabScene,
+    jumpToIndex: (index: number) => void
+  ) => void,
 };
 
 /**
@@ -355,6 +359,7 @@ export type NavigationDrawerScreenOptions = {
     | ((options: { tintColor: ?string, focused: boolean }) => ?React.Element<
         *
       >),
+  drawerLockMode?: 'unlocked' | 'locked-closed' | 'locked-open',
 };
 
 /**
@@ -381,9 +386,9 @@ export type NavigationScreenProp<S, A> = {
 };
 
 export type NavigationNavigatorProps<O, S> = {
-  navigation: NavigationProp<S, NavigationAction>,
-  screenProps: *,
-  navigationOptions: O,
+  navigation?: NavigationProp<S, NavigationAction>,
+  screenProps?: *,
+  navigationOptions?: O,
 };
 
 /**
@@ -447,7 +452,7 @@ export type NavigationSceneRendererProps = NavigationTransitionProps;
 export type NavigationTransitionSpec = {
   duration?: number,
   // An easing function from `Easing`.
-  easing?: (t?: number) => number,
+  easing?: (t: number) => number,
   // A timing function such as `Animated.timing`.
   timing?: (value: Animated.Value, config: any) => any,
 };
@@ -463,7 +468,7 @@ export type TransitionConfig = {
   screenInterpolator?: (props: NavigationSceneRendererProps) => {},
   // The style of the container. Useful when a scene doesn't have
   // 100% opacity and the underlying container is visible.
-  containerStyle?: $PropertyType<ViewProps, 'style'>,
+  containerStyle?: ViewStyleProp,
 };
 
 export type NavigationAnimationSetter = (
@@ -476,7 +481,7 @@ export type NavigationSceneRenderer = () => ?React.Element<*>;
 
 export type NavigationStyleInterpolator = (
   props: NavigationSceneRendererProps
-) => AnimatedViewStylePropTypes;
+) => AnimatedViewStyleProp;
 
 export type LayoutEvent = {
   nativeEvent: {

@@ -32,21 +32,24 @@ const DefaultDrawerConfig = {
     Dimensions.get('window').width - (Platform.OS === 'android' ? 56 : 64),
   contentComponent: DrawerItems,
   drawerPosition: 'left',
+  useNativeAnimations: true,
   drawerOpenRoute: 'DrawerOpen',
   drawerCloseRoute: 'DrawerClose',
 };
 
 const DrawerNavigator = (
   routeConfigs: NavigationRouteConfigMap,
-  config: DrawerNavigatorConfig
+  config: DrawerNavigatorConfig = {}
 ) => {
   const mergedConfig = { ...DefaultDrawerConfig, ...config };
   const {
     containerConfig,
     drawerWidth,
+    drawerLockMode,
     contentComponent,
     contentOptions,
     drawerPosition,
+    useNativeAnimations,
     drawerOpenRoute,
     drawerCloseRoute,
     ...tabsConfig
@@ -81,9 +84,11 @@ const DrawerNavigator = (
     routeConfigs,
     config,
     NavigatorTypes.DRAWER
-  )((props: *) =>
+  )((props: *) => (
     <DrawerView
       {...props}
+      drawerLockMode={drawerLockMode}
+      useNativeAnimations={useNativeAnimations}
       drawerWidth={drawerWidth}
       contentComponent={contentComponent}
       contentOptions={contentOptions}
@@ -91,7 +96,7 @@ const DrawerNavigator = (
       drawerOpenRoute={drawerOpenRoute}
       drawerCloseRoute={drawerCloseRoute}
     />
-  );
+  ));
 
   return createNavigationContainer(navigator);
 };

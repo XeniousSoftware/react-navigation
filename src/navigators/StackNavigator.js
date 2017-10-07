@@ -46,7 +46,7 @@ export default (
     routeConfigMap,
     stackConfig,
     NavigatorTypes.STACK
-  )((props: *) =>
+  )((props: *) => (
     <CardStackTransitioner
       {...props}
       headerMode={headerMode}
@@ -56,7 +56,7 @@ export default (
       onTransitionStart={onTransitionStart}
       onTransitionEnd={onTransitionEnd}
     />
-  );
+  ));
 
   return createNavigationContainer(navigator);
 };

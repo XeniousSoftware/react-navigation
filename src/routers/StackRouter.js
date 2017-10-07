@@ -127,10 +127,10 @@ export default (
         const params = (route.params ||
           action.params ||
           initialRouteParams) && {
-          ...(route.params || {}),
-          ...(action.params || {}),
-          ...(initialRouteParams || {}),
-        };
+            ...(route.params || {}),
+            ...(action.params || {}),
+            ...(initialRouteParams || {}),
+          };
         route = {
           ...route,
           routeName: initialRouteName,
